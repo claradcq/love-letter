@@ -3,473 +3,421 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pour Toi</title>
+<title>Pour Toi 💌</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
     --cream: #f5ead6;
-    --cream-dark: #e8d5b7;
+    --cream-dark: #e2cc9f;
     --brown: #7a5230;
     --brown-light: #a0733f;
     --red: #c0392b;
     --ink: #2c1a0e;
-    --ink-light: #5a3a1a;
     --gold: #c8961e;
+    --env-front: #d4a55a;
+    --env-shadow: #b8883a;
   }
 
   body {
-    background-color: #2a1a0a;
+    background-color: #1e1008;
     background-image:
-      radial-gradient(ellipse at 20% 20%, #3d2010 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 80%, #1a0d05 0%, transparent 60%);
+      radial-gradient(ellipse at 25% 30%, #3a1f08 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 70%, #150a02 0%, transparent 55%);
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    font-family: 'Lora', serif;
-  }
-
-  /* Noise texture overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    opacity: 0.3;
-    z-index: 0;
-  }
-
-  .scene {
-    position: relative;
-    z-index: 1;
-    display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    animation: fadeIn 1.5s ease forwards;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Decorative wax seal top */
-  .seal {
-    width: 70px;
-    height: 70px;
-    background: radial-gradient(circle at 40% 35%, #e05050, var(--red) 50%, #8b1a1a);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,200,200,0.2);
-    font-size: 26px;
-    animation: sealPulse 3s ease-in-out infinite;
+    font-family: 'Lora', serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .hint {
+    color: rgba(200,150,80,0.5);
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    margin-bottom: 40px;
+    transition: opacity 0.5s;
+  }
+
+  .hint.hidden { opacity: 0; pointer-events: none; }
+
+  /* ── ENVELOPE ── */
+  .envelope-wrap {
     position: relative;
+    width: 340px;
+    height: 240px;
+    cursor: grab;
   }
 
-  .seal::after {
-    content: '';
+  .envelope-wrap:active { cursor: grabbing; }
+
+  /* Back of envelope */
+  .env-back {
     position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 2px dashed rgba(192,57,43,0.4);
+    inset: 0;
+    background: var(--env-shadow);
+    border-radius: 4px 4px 6px 6px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 4px 10px rgba(0,0,0,0.3);
   }
 
-  @keyframes sealPulse {
-    0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 0 0 rgba(192,57,43,0); }
-    50% { box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 0 12px rgba(192,57,43,0); }
+  /* Left and right triangles (inside back) */
+  .env-left {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 120px 0 0 170px;
+    border-color: transparent transparent transparent #c8943a;
+    z-index: 1;
   }
 
-  /* The letter */
-  .envelope-flap {
-    width: min(680px, 100%);
-    height: 40px;
-    background: linear-gradient(to bottom, var(--cream-dark), var(--cream));
-    clip-path: polygon(0 0, 50% 100%, 100% 0);
-    margin-bottom: -2px;
+  .env-right {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 120px 170px 0 0;
+    border-color: transparent #c8943a transparent transparent;
+    z-index: 1;
   }
 
-  .letter {
-    width: min(680px, 100%);
+  /* Bottom triangle */
+  .env-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    width: 0; height: 0;
+    margin: auto;
+    border-style: solid;
+    border-width: 0 170px 124px 170px;
+    border-color: transparent transparent #bf8830 transparent;
+    z-index: 2;
+  }
+
+  /* The letter inside — pulled upward */
+  .letter-pull {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    bottom: 30px;
+    z-index: 3;
+    transition: none;
+  }
+
+  .letter-pull.animate-back {
+    transition: bottom 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .letter-paper {
     background: var(--cream);
     background-image:
-      linear-gradient(to bottom, transparent 28px, rgba(122,82,48,0.12) 28px, rgba(122,82,48,0.12) 29px, transparent 29px),
-      radial-gradient(ellipse at top left, #fdf5e6 0%, var(--cream) 60%);
-    background-size: 100% 29px, 100% 100%;
-    border-radius: 2px;
-    padding: 60px 70px 70px;
-    position: relative;
-    box-shadow:
-      0 20px 60px rgba(0,0,0,0.5),
-      0 2px 4px rgba(0,0,0,0.2),
-      inset 0 0 80px rgba(122,82,48,0.06);
+      linear-gradient(to bottom, transparent 27px, rgba(122,82,48,0.13) 27px, rgba(122,82,48,0.13) 28px, transparent 28px);
+    background-size: 100% 28px;
+    border-radius: 3px 3px 0 0;
+    padding: 30px 28px 36px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+    min-height: 320px;
+    opacity: 0;
+    transition: opacity 0.4s 0.2s;
   }
 
-  /* Paper fold lines */
-  .letter::before {
-    content: '';
-    position: absolute;
-    left: 0; right: 0;
-    top: 33.33%;
-    height: 1px;
-    background: rgba(122,82,48,0.08);
-  }
+  .letter-paper.visible { opacity: 1; }
 
-  .letter::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0;
-    top: 66.66%;
-    height: 1px;
-    background: rgba(122,82,48,0.08);
-  }
-
-  /* Decorative corner flourishes */
-  .corner {
-    position: absolute;
-    font-size: 28px;
-    opacity: 0.18;
-    color: var(--brown);
-    line-height: 1;
-  }
-  .corner.tl { top: 16px; left: 18px; transform: rotate(0deg); }
-  .corner.tr { top: 16px; right: 18px; transform: rotate(90deg); }
-  .corner.bl { bottom: 16px; left: 18px; transform: rotate(-90deg); }
-  .corner.br { bottom: 16px; right: 18px; transform: rotate(180deg); }
-
-  .date {
-    font-family: 'Lora', serif;
+  .letter-date {
     font-style: italic;
     color: var(--brown-light);
-    font-size: 13px;
+    font-size: 12px;
     text-align: right;
-    margin-bottom: 32px;
-    letter-spacing: 0.04em;
+    margin-bottom: 18px;
   }
 
-  .salutation {
+  .letter-salutation {
     font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 28px;
-    color: var(--brown);
-    margin-bottom: 24px;
-    line-height: 1.2;
-  }
-
-  .letter-body {
-    font-family: 'Lora', serif;
-    font-size: 16.5px;
-    line-height: 1.95;
-    color: var(--ink);
-    white-space: pre-wrap;
-    word-break: break-word;
-    min-height: 180px;
-    transition: color 0.3s;
-  }
-
-  .closing {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 20px;
-    color: var(--brown);
-    margin-top: 36px;
-    line-height: 1.5;
-  }
-
-  .signature {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 28px;
-    color: var(--ink-light);
-    margin-top: 8px;
-    letter-spacing: 0.02em;
-  }
-
-  /* Divider */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 28px 0;
-    opacity: 0.3;
-  }
-
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--brown);
-  }
-
-  .divider span { color: var(--brown); font-size: 14px; }
-
-  /* Edit button */
-  .edit-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(122,82,48,0.12);
-    border: 1px solid rgba(122,82,48,0.25);
-    color: var(--brown-light);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-family: 'Lora', serif;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.25s;
-    z-index: 10;
-  }
-
-  .edit-btn:hover {
-    background: rgba(122,82,48,0.2);
-    border-color: var(--brown-light);
-  }
-
-  /* Editor overlay */
-  .editor-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(20,10,2,0.85);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .editor-overlay.active { display: flex; }
-
-  .editor-box {
-    background: #fdf5e0;
-    border-radius: 4px;
-    padding: 40px;
-    width: min(600px, 100%);
-    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    animation: slideUp 0.35s ease;
-  }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .editor-box h2 {
-    font-family: 'Playfair Display', serif;
-    color: var(--brown);
     font-style: italic;
     font-size: 22px;
+    color: var(--brown);
+    margin-bottom: 16px;
   }
 
-  .editor-box label {
-    font-family: 'Lora', serif;
-    font-size: 13px;
-    color: var(--brown-light);
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  .editor-box input, .editor-box textarea {
-    width: 100%;
-    background: white;
-    border: 1px solid rgba(122,82,48,0.25);
-    border-radius: 3px;
-    padding: 10px 14px;
-    font-family: 'Lora', serif;
-    font-size: 15px;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .editor-box input:focus, .editor-box textarea:focus {
-    border-color: var(--brown-light);
-  }
-
-  .editor-box textarea {
-    min-height: 200px;
-    resize: vertical;
-    line-height: 1.7;
-  }
-
-  .editor-actions {
+  .letter-divider {
     display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    opacity: 0.25;
+  }
+  .letter-divider::before, .letter-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--brown);
+  }
+  .letter-divider span { color: var(--brown); font-size: 11px; }
+
+  .letter-body {
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--ink);
+    white-space: pre-wrap;
   }
 
-  .btn-cancel {
-    padding: 10px 22px;
-    background: transparent;
-    border: 1px solid rgba(122,82,48,0.3);
-    color: var(--brown-light);
-    border-radius: 3px;
-    font-family: 'Lora', serif;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-cancel:hover { background: rgba(122,82,48,0.08); }
-
-  .btn-save {
-    padding: 10px 28px;
-    background: var(--brown);
-    border: none;
-    color: var(--cream);
-    border-radius: 3px;
+  .letter-closing {
     font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
+    font-size: 16px;
+    color: var(--brown);
+    margin-top: 24px;
   }
 
-  .btn-save:hover { background: var(--brown-light); }
+  .letter-signature {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ink);
+    margin-top: 6px;
+  }
+
+  /* Flap on top */
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 0;
+    width: 0;
+    border-style: solid;
+    border-width: 120px 170px 0 170px;
+    border-color: #d4a55a transparent transparent transparent;
+    z-index: 6;
+    transform-origin: top center;
+    transition: transform 0.5s ease;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15));
+  }
+
+  .env-flap.open {
+    transform: rotateX(180deg);
+  }
+
+  /* Wax seal */
+  .seal {
+    position: absolute;
+    top: 95px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(circle at 40% 35%, #e05050, var(--red) 50%, #7a1010);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: rgba(255,220,220,0.9);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,180,180,0.2);
+    z-index: 7;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
+  .seal.hidden {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+    pointer-events: none;
+  }
+
+  /* Front face */
+  .env-front {
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    z-index: 5;
+    background: transparent;
+  }
 
   /* Floating petals */
   .petal {
     position: fixed;
-    font-size: 16px;
     pointer-events: none;
     z-index: 0;
     opacity: 0;
     animation: fall linear infinite;
   }
-
   @keyframes fall {
-    0% { transform: translateY(-40px) rotate(0deg); opacity: 0; }
-    10% { opacity: 0.6; }
-    90% { opacity: 0.3; }
-    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-  }
-
-  /* Bottom caption */
-  .caption {
-    color: rgba(200,150,100,0.3);
-    font-family: 'Lora', serif;
-    font-style: italic;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-align: center;
-  }
-
-  @media (max-width: 600px) {
-    .letter { padding: 40px 30px 50px; }
-    .salutation { font-size: 22px; }
-    .letter-body { font-size: 15px; }
+    0%   { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.5; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
   }
 </style>
 </head>
 <body>
 
-<!-- Floating petals -->
-<div class="petal" style="left:8%;animation-duration:12s;animation-delay:0s;font-size:14px;">🌸</div>
-<div class="petal" style="left:20%;animation-duration:15s;animation-delay:2s;">🍂</div>
-<div class="petal" style="left:40%;animation-duration:10s;animation-delay:5s;font-size:12px;">🌿</div>
-<div class="petal" style="left:60%;animation-duration:13s;animation-delay:1s;">🌸</div>
-<div class="petal" style="left:75%;animation-duration:11s;animation-delay:7s;font-size:18px;">🍂</div>
-<div class="petal" style="left:88%;animation-duration:14s;animation-delay:3s;font-size:12px;">🌸</div>
+<div class="petal" style="left:7%;animation-duration:13s;animation-delay:0s;font-size:13px;">🌸</div>
+<div class="petal" style="left:22%;animation-duration:16s;animation-delay:3s;font-size:10px;">🍂</div>
+<div class="petal" style="left:45%;animation-duration:11s;animation-delay:6s;font-size:12px;">🌿</div>
+<div class="petal" style="left:63%;animation-duration:14s;animation-delay:1s;font-size:11px;">🌸</div>
+<div class="petal" style="left:82%;animation-duration:12s;animation-delay:8s;font-size:14px;">🍂</div>
 
-<div class="scene">
-  <div class="seal">♥</div>
+<p class="hint" id="hint">✦ Tire la lettre vers le haut ✦</p>
 
-  <div style="position:relative; width:min(680px,100%)">
-    <button class="edit-btn" onclick="openEditor()">✏️ Modifier la lettre</button>
+<div class="envelope-wrap" id="envelopeWrap">
 
-    <div class="letter" id="letter">
-      <div class="corner tl">❧</div>
-      <div class="corner tr">❧</div>
-      <div class="corner bl">❧</div>
-      <div class="corner br">❧</div>
+  <!-- Back layers -->
+  <div class="env-back"></div>
+  <div class="env-left"></div>
+  <div class="env-right"></div>
+  <div class="env-bottom"></div>
 
-      <div class="date" id="display-date">Le <span id="auto-date"></span></div>
+  <!-- Letter paper (pulled out) -->
+  <div class="letter-pull" id="letterPull">
+    <div class="letter-paper" id="letterPaper">
 
-      <div class="salutation" id="display-salutation">Ma chérie,</div>
+      <div class="letter-date" id="letter-date"></div>
 
-      <div class="divider"><span>✦</span></div>
+      <!-- ============================================ -->
+      <!--  ✏️  MODIFIE ICI TA LETTRE                  -->
+      <!-- ============================================ -->
 
-      <div class="letter-body" id="display-body">Écris ici ta lettre... Clique sur "Modifier la lettre" pour personnaliser ce message avec tes propres mots.</div>
+      <div class="letter-salutation">Mon amour,</div>
+      <!-- ^ Change "Mon amour," par le prénom ou surnom de ta copine -->
 
-      <div class="closing" id="display-closing">Avec tout mon amour,</div>
-      <div class="signature" id="display-signature">— Ton prénom</div>
+      <div class="letter-divider"><span>✦</span></div>
+
+      <div class="letter-body"> C'est à mon tour de t'écrire un mot d'amour tous les jours
+        comme c'est moi qui bouge ce week-end. Je me suis dit que j'allais te faire un ptit 
+        site qui était plus moi que canva mais j'aurai peut-être pas le temps demain.
+        Ne t'en fais je penserais au canva
+        Je suis trop contente d'avoir passé cette
+        semaine ensemble. On a pu avoir un aperçu de notre début de vie ensemble et j'ai encore
+        plus hâte qu'elle commence qu'avant.Je suis tellement heureuse d'être avec toi.
+        Je me suis rendue compte que je ne serai pas là pour nos 5 mois, enfin je rentre dimanche. 
+        Qu'est ce que tu penses d'un resto ? 
+        Je t'envoie les différentes options à choisir demain
+
+        Je t'aime
+                                                </div>
+      <!-- ^ Remplace ce texte par ta lettre -->
+
+      <div class="letter-closing">Avec tout mon amour,</div>
+      <!-- ^ Change la formule de clôture si tu veux -->
+
+      <div class="letter-signature">— Clara</div>
+      <!-- ^ Mets ta signature ici -->
+
+      <!-- ============================================ -->
+      <!--  Fin de la zone à modifier                  -->
+      <!-- ============================================ -->
+
     </div>
   </div>
 
-  <div class="caption">Une lettre écrite avec le cœur</div>
-</div>
+  <!-- Front transparent (captures events) -->
+  <div class="env-front"></div>
 
-<!-- Editor overlay -->
-<div class="editor-overlay" id="editor">
-  <div class="editor-box">
-    <h2>Écrire ta lettre</h2>
+  <!-- Flap -->
+  <div class="env-flap" id="envFlap"></div>
 
-    <div>
-      <label>Prénom de ta copine (pour la salutation)</label>
-      <input type="text" id="input-salutation" placeholder="ex: Ma chérie, Mon amour, Léa,..." value="Ma chérie,">
-    </div>
+  <!-- Wax seal -->
+  <div class="seal" id="seal">♥</div>
 
-    <div>
-      <label>Le texte de ta lettre</label>
-      <textarea id="input-body" placeholder="Écris ta lettre ici...">Écris ici ta lettre... Clique sur "Modifier la lettre" pour personnaliser ce message avec tes propres mots.</textarea>
-    </div>
-
-    <div>
-      <label>Formule de clôture</label>
-      <input type="text" id="input-closing" placeholder="ex: Avec tout mon amour," value="Avec tout mon amour,">
-    </div>
-
-    <div>
-      <label>Ta signature</label>
-      <input type="text" id="input-signature" placeholder="Ton prénom" value="— Ton prénom">
-    </div>
-
-    <div class="editor-actions">
-      <button class="btn-cancel" onclick="closeEditor()">Annuler</button>
-      <button class="btn-save" onclick="saveLetter()">Enregistrer ✦</button>
-    </div>
-  </div>
 </div>
 
 <script>
-  // Auto date in French
+  // Auto date
   const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const today = new Date();
-  document.getElementById('auto-date').textContent = `${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+  document.getElementById('letter-date').textContent = `Le ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
 
-  function openEditor() {
-    document.getElementById('input-salutation').value = document.getElementById('display-salutation').textContent;
-    document.getElementById('input-body').value = document.getElementById('display-body').textContent;
-    document.getElementById('input-closing').value = document.getElementById('display-closing').textContent;
-    document.getElementById('input-signature').value = document.getElementById('display-signature').textContent;
-    document.getElementById('editor').classList.add('active');
+  const wrap = document.getElementById('envelopeWrap');
+  const letterPull = document.getElementById('letterPull');
+  const letterPaper = document.getElementById('letterPaper');
+  const flap = document.getElementById('envFlap');
+  const seal = document.getElementById('seal');
+  const hint = document.getElementById('hint');
+
+  let isDragging = false;
+  let startY = 0;
+  let currentBottom = 30;
+  let maxPull = 320;
+  let opened = false;
+  let flapOpened = false;
+
+  function getClientY(e) {
+    return e.touches ? e.touches[0].clientY : e.clientY;
   }
 
-  function closeEditor() {
-    document.getElementById('editor').classList.remove('active');
+  function onStart(e) {
+    if (opened) return;
+    isDragging = true;
+    startY = getClientY(e);
+    letterPull.classList.remove('animate-back');
+    e.preventDefault();
   }
 
-  function saveLetter() {
-    document.getElementById('display-salutation').textContent = document.getElementById('input-salutation').value;
-    document.getElementById('display-body').textContent = document.getElementById('input-body').value;
-    document.getElementById('display-closing').textContent = document.getElementById('input-closing').value;
-    document.getElementById('display-signature').textContent = document.getElementById('input-signature').value;
-    closeEditor();
+  function onMove(e) {
+    if (!isDragging || opened) return;
+    const dy = startY - getClientY(e);
+    let newBottom = 30 + Math.max(0, dy);
+    newBottom = Math.min(newBottom, maxPull);
+    currentBottom = newBottom;
+    letterPull.style.bottom = currentBottom + 'px';
+
+    // Open flap when pulled enough
+    if (currentBottom > 60 && !flapOpened) {
+      flapOpened = true;
+      flap.classList.add('open');
+      seal.classList.add('hidden');
+      hint.classList.add('hidden');
+    } else if (currentBottom <= 60 && flapOpened) {
+      flapOpened = false;
+      flap.classList.remove('open');
+      seal.classList.remove('hidden');
+    }
+
+    // Show letter text when pulled enough
+    if (currentBottom > 120) {
+      letterPaper.classList.add('visible');
+    } else {
+      letterPaper.classList.remove('visible');
+    }
+
+    e.preventDefault();
   }
 
-  // Close on backdrop click
-  document.getElementById('editor').addEventListener('click', function(e) {
-    if (e.target === this) closeEditor();
-  });
+  function onEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+
+    if (currentBottom > maxPull * 0.55) {
+      // Snap fully open
+      opened = true;
+      letterPull.classList.add('animate-back');
+      letterPull.style.bottom = (maxPull + 60) + 'px';
+      letterPaper.classList.add('visible');
+      flap.classList.add('open');
+      seal.classList.add('hidden');
+      hint.classList.add('hidden');
+      // Expand envelope height
+      wrap.style.marginBottom = (maxPull - 60) + 'px';
+    } else {
+      // Snap back
+      letterPull.classList.add('animate-back');
+      letterPull.style.bottom = '30px';
+      currentBottom = 30;
+      flapOpened = false;
+      flap.classList.remove('open');
+      seal.classList.remove('hidden');
+      letterPaper.classList.remove('visible');
+    }
+  }
+
+  wrap.addEventListener('mousedown', onStart);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onEnd);
+
+  wrap.addEventListener('touchstart', onStart, { passive: false });
+  window.addEventListener('touchmove', onMove, { passive: false });
+  window.addEventListener('touchend', onEnd);
 </script>
 </body>
 </html>
