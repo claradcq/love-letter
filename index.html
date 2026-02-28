@@ -149,7 +149,7 @@
     box-shadow: 0 16px 40px rgba(0,0,0,0.4);
   }
   .letter-wrap.open {
-    max-height: 600px;
+    max-height: 800px;
   }
 
   .letter-paper {
@@ -159,7 +159,7 @@
     background-size: 100% 28px;
     padding: 28px 28px 36px;
     overflow-y: auto;
-    max-height: 600px;
+    max-height: 800px;
   }
 
   .letter-date {
@@ -191,6 +191,72 @@
     color: var(--ink);
     white-space: pre-wrap;
   }
+
+  /* ── RESTAURANT BUTTONS ── */
+  .resto-section {
+    margin: 18px 0 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    user-select: none;
+  }
+  .resto-label {
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--brown-light);
+    margin-bottom: 4px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .resto-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #fffaf2, #f5e8cc);
+    border: 1.5px solid var(--brown-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--ink);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    box-shadow: 0 2px 6px rgba(122,82,48,0.15);
+  }
+  .resto-btn:hover {
+    background: linear-gradient(135deg, #fdf3e0, #edd9a8);
+    box-shadow: 0 4px 14px rgba(122,82,48,0.3);
+    transform: translateY(-1px);
+  }
+  .resto-btn:active {
+    transform: translateY(0);
+  }
+  .resto-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .resto-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .resto-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--brown);
+  }
+  .resto-desc {
+    font-size: 11.5px;
+    color: var(--brown-light);
+    font-style: italic;
+    margin-top: 1px;
+  }
+  .resto-arrow {
+    margin-left: auto;
+    color: var(--brown-light);
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
   .letter-closing {
     font-family: 'Playfair Display', serif;
     font-style: italic;
@@ -246,34 +312,59 @@
 
       <div class="letter-date" id="letter-date"></div>
 
-      <!-- ============================================ -->
-      <!--  ✏️  MODIFIE ICI TA LETTRE                  -->
-      <!-- ============================================ -->
-
-      <div class="letter-salutation">Mon amour,</div>
-      <!-- ^ Change par le prénom de ta copine -->
+      <div class="letter-salutation">Ma femme de ma vie,</div>
 
       <div class="letter-divider"><span>✦</span></div>
 
-      <div class="letter-body">
-        C'est à mon tour de t'écrire un mot d'amour tous les jours comme c'est moi qui bouge ce week-end. Je me suis dit que j'allais te faire un ptit site qui était plus moi que canva mais j'aurai peut-être pas le temps demain.
-        Ne t'en fais je penserais au canva !
-        Je suis trop contente d'avoir passé cette semaine ensemble. On a pu avoir un aperçu de notre début de vie ensemble et j'ai encore plus hâte qu'elle commence qu'avant.Je suis tellement heureuse d'être avec toi.
-        Je me suis rendue compte que je ne serai pas là pour nos 5 mois, enfin je rentre dimanche. 
-        Qu'est ce que tu penses d'un resto ? 
-        Je t'envoie les différentes options à choisir demain
+      <div class="letter-body">Comme promis je t'écris cette lettre ce matin. 
+Je me suis réveillée et endormie en pensant à toi, tu inondes mes pensées autant que la Seine inonde Paris. 
 
-        Je t'aime
+Je t'avais promis des restaurants, j'en ai trouvé 3 — fais ton choix baby :</div>
+
+      <!-- ══ BOUTONS RESTAURANTS ══ -->
+      <div class="resto-section">
+        <div class="resto-label">✦ Où veux-tu qu'on aille ? ✦</div>
+
+        <!-- Resto 1 : remplace le href="#" par ton lien -->
+        <a class="resto-btn" href="https://marlaparis.fr" target="_blank">
+          <span class="resto-icon">🕯️</span>
+          <span class="resto-info">
+            <span class="resto-name">Marla</span>
+            <span class="resto-desc">À côté de chez toi</span>
+          </span>
+          <span class="resto-arrow">→</span>
+        </a>
+
+        <!-- Resto 2 -->
+        <a class="resto-btn" href="https://la-brasserie-thai-chez-thanatcha.fr/fr" target="_blank">
+          <span class="resto-icon">🍜</span>
+          <span class="resto-info">
+            <span class="resto-name">Brasserie Thaï</span>
+            <span class="resto-desc">Restaurant thaïlandais très bon</span>
+          </span>
+          <span class="resto-arrow">→</span>
+        </a>
+
+        <!-- Resto 3 -->
+        <a class="resto-btn" href="https://dame-resto.fr/fr/index.php" target="_blank">
+          <span class="resto-icon">🍽️</span>
+          <span class="resto-info">
+            <span class="resto-name">Dame Restaurant</span>
+            <span class="resto-desc">Semi-gastro · plats à partager</span>
+          </span>
+          <span class="resto-arrow">→</span>
+        </a>
+
       </div>
-      <!-- ^ Remplace ce texte par ta lettre -->
+      <!-- ══════════════════════════ -->
 
-      <div class="letter-closing">Avec tout mon amour,</div>
-      <!-- ^ Change la formule de clôture -->
+      <div class="letter-body">
+Chaque minute loin de toi me rappelle à quel point tu es une femme géniale et la chance que j'ai que tu partages ma vie.
+Je promets de t'être dévouée et de te rendre la plus heureuse aussi longtemps que tu me le laisseras.
+Je suis tellement amoureuse de toi.</div>
 
-      <div class="letter-signature">— Clara, ta femme</div>
-      <!-- ^ Ta signature -->
-
-      <!-- ============================================ -->
+      <div class="letter-closing">Je t'aime de tout mon cœur,</div>
+      <div class="letter-signature">— ton amoureuse.</div>
 
     </div>
   </div>
