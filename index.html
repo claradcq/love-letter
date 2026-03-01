@@ -32,6 +32,7 @@
     padding: 40px 20px 60px;
     font-family: 'Lora', serif;
     user-select: none;
+    overflow-x: hidden;
   }
 
   .hint {
@@ -52,7 +53,6 @@
     width: min(360px, 100%);
   }
 
-  /* ── ENVELOPE ── */
   .envelope {
     position: relative;
     width: 100%;
@@ -98,7 +98,6 @@
     z-index: 2;
   }
 
-  /* flap */
   .env-flap-wrap {
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -118,7 +117,6 @@
     border-color: var(--env-color) transparent transparent transparent;
   }
 
-  /* wax seal */
   .seal {
     position: absolute;
     top: 80px; left: 50%;
@@ -139,7 +137,6 @@
     pointer-events: none;
   }
 
-  /* ── LETTER ── */
   .letter-wrap {
     width: calc(100% - 16px);
     max-height: 0;
@@ -191,72 +188,6 @@
     color: var(--ink);
     white-space: pre-wrap;
   }
-
-  /* ── RESTAURANT BUTTONS ── */
-  .resto-section {
-    margin: 18px 0 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    user-select: none;
-  }
-  .resto-label {
-    font-size: 12.5px;
-    font-style: italic;
-    color: var(--brown-light);
-    margin-bottom: 4px;
-    text-align: center;
-    letter-spacing: 0.05em;
-  }
-  .resto-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(135deg, #fffaf2, #f5e8cc);
-    border: 1.5px solid var(--brown-light);
-    border-radius: 8px;
-    padding: 10px 14px;
-    cursor: pointer;
-    text-decoration: none;
-    color: var(--ink);
-    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-    box-shadow: 0 2px 6px rgba(122,82,48,0.15);
-  }
-  .resto-btn:hover {
-    background: linear-gradient(135deg, #fdf3e0, #edd9a8);
-    box-shadow: 0 4px 14px rgba(122,82,48,0.3);
-    transform: translateY(-1px);
-  }
-  .resto-btn:active {
-    transform: translateY(0);
-  }
-  .resto-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-  .resto-info {
-    display: flex;
-    flex-direction: column;
-  }
-  .resto-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--brown);
-  }
-  .resto-desc {
-    font-size: 11.5px;
-    color: var(--brown-light);
-    font-style: italic;
-    margin-top: 1px;
-  }
-  .resto-arrow {
-    margin-left: auto;
-    color: var(--brown-light);
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-
   .letter-closing {
     font-family: 'Playfair Display', serif;
     font-style: italic;
@@ -272,25 +203,26 @@
     margin-top: 6px;
   }
 
-  .petal {
-    position: fixed; pointer-events: none; z-index: 0; opacity: 0;
-    animation: fall linear infinite;
+  /* ── PÉTALES CONFETTIS ── */
+  .confetti-piece {
+    position: fixed;
+    top: -30px;
+    pointer-events: none;
+    z-index: 999;
+    font-size: 18px;
+    animation: confettiFall linear forwards;
+    opacity: 0;
   }
-  @keyframes fall {
-    0%   { transform: translateY(-40px) rotate(0deg); opacity: 0; }
-    10%  { opacity: 0.45; }
-    90%  { opacity: 0.15; }
-    100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+
+  @keyframes confettiFall {
+    0%   { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; }
+    10%  { opacity: 1; transform: translateY(5vh) rotate(40deg) scale(1); }
+    80%  { opacity: 0.9; }
+    100% { transform: translateY(105vh) rotate(720deg) scale(0.8); opacity: 0; }
   }
 </style>
 </head>
 <body>
-
-<div class="petal" style="left:7%;animation-duration:13s;animation-delay:0s;font-size:13px;">🌸</div>
-<div class="petal" style="left:22%;animation-duration:16s;animation-delay:3s;font-size:10px;">🍂</div>
-<div class="petal" style="left:45%;animation-duration:11s;animation-delay:6s;font-size:12px;">🌿</div>
-<div class="petal" style="left:63%;animation-duration:14s;animation-delay:1s;font-size:11px;">🌸</div>
-<div class="petal" style="left:82%;animation-duration:12s;animation-delay:8s;font-size:14px;">🍂</div>
 
 <p class="hint" id="hint">✦ Clique sur l'enveloppe pour l'ouvrir ✦</p>
 
@@ -312,59 +244,26 @@
 
       <div class="letter-date" id="letter-date"></div>
 
+      <!-- ============================================ -->
+      <!--  ✏️  MODIFIE ICI TA LETTRE                  -->
+      <!-- ============================================ -->
+
       <div class="letter-salutation">Ma femme de ma vie,</div>
 
       <div class="letter-divider"><span>✦</span></div>
 
-      <div class="letter-body">Comme promis je t'écris cette lettre ce matin. 
-Je me suis réveillée et endormie en pensant à toi, tu inondes mes pensées autant que la Seine inonde Paris. 
-
-Je t'avais promis des restaurants, j'en ai trouvé 3 — fais ton choix baby :</div>
-
-      <!-- ══ BOUTONS RESTAURANTS ══ -->
-      <div class="resto-section">
-        <div class="resto-label">✦ Où veux-tu qu'on aille ? ✦</div>
-
-        <!-- Resto 1 : remplace le href="#" par ton lien -->
-        <a class="resto-btn" href="https://marlaparis.fr" target="_blank">
-          <span class="resto-icon">🕯️</span>
-          <span class="resto-info">
-            <span class="resto-name">Marla</span>
-            <span class="resto-desc">À côté de chez toi</span>
-          </span>
-          <span class="resto-arrow">→</span>
-        </a>
-
-        <!-- Resto 2 -->
-        <a class="resto-btn" href="https://la-brasserie-thai-chez-thanatcha.fr/fr" target="_blank">
-          <span class="resto-icon">🍜</span>
-          <span class="resto-info">
-            <span class="resto-name">Brasserie Thaï</span>
-            <span class="resto-desc">Restaurant thaïlandais très bon</span>
-          </span>
-          <span class="resto-arrow">→</span>
-        </a>
-
-        <!-- Resto 3 -->
-        <a class="resto-btn" href="https://dame-resto.fr/fr/index.php" target="_blank">
-          <span class="resto-icon">🍽️</span>
-          <span class="resto-info">
-            <span class="resto-name">Dame Restaurant</span>
-            <span class="resto-desc">Semi-gastro · plats à partager</span>
-          </span>
-          <span class="resto-arrow">→</span>
-        </a>
-
-      </div>
-      <!-- ══════════════════════════ -->
-
-      <div class="letter-body">
-Chaque minute loin de toi me rappelle à quel point tu es une femme géniale et la chance que j'ai que tu partages ma vie.
-Je promets de t'être dévouée et de te rendre la plus heureuse aussi longtemps que tu me le laisseras.
-Je suis tellement amoureuse de toi.</div>
+      <div class="letter-body">Comme promis je t'écris cette lettre. Je ne l'ai pas oubliée.
+        J'ai si hâte de te retrouver et de pouvoir te serrer dans mes bras. 
+        J'ai hâte de notre restaurant ce soir et de passer du temps avec toi.
+        Plus j'apprends à te connaitre dans ces moments plus je tombe amoureuse de toi. Je ne veux cesser d'apprendre des choses sur toi et de continuer à bâtir ce beau lien qu'est le nôtre.
+        Tu es tellement une personne incroyable et géniale.
+        J'espère que tu le sais.
+                                      </div>
 
       <div class="letter-closing">Je t'aime de tout mon cœur,</div>
       <div class="letter-signature">— ton amoureuse.</div>
+
+      <!-- ============================================ -->
 
     </div>
   </div>
@@ -383,12 +282,36 @@ Je suis tellement amoureuse de toi.</div>
   const hint = document.getElementById('hint');
   let opened = false;
 
+  const emojis = ['🌸', '🌺', '🌹', '✨', '💕', '🍂', '🌿', '💛', '🌼', '💗'];
+
+  function launchConfetti() {
+    const count = 60;
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.classList.add('confetti-piece');
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.fontSize = (12 + Math.random() * 16) + 'px';
+        const duration = 2.5 + Math.random() * 3;
+        el.style.animationDuration = duration + 's';
+        el.style.animationDelay = '0s';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), (duration + 0.2) * 1000);
+      }, i * 40);
+    }
+  }
+
   envelope.addEventListener('click', () => {
     if (opened) return;
     opened = true;
     flap.classList.add('open');
     seal.classList.add('hidden');
     hint.classList.add('hidden');
+
+    // Lance les pétales dès l'ouverture
+    launchConfetti();
+
     setTimeout(() => {
       letterWrap.classList.add('open');
     }, 450);
